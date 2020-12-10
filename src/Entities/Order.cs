@@ -42,6 +42,7 @@ namespace src.Entities
             {
                 sum += obj.SubTotal();
             }
+            return sum;
         }
 
         public override string ToString()

@@ -64,7 +64,7 @@ namespace src.Entities
             {
                 sb.AppendLine(obj.ToString());
             }
-            sb.AppendLine(Total().ToString("F2", CultureInfo.InvariantCulture);
+            sb.AppendLine(Total().ToString("F2", CultureInfo.InvariantCulture));
 
             return sb.ToString();
         }

@@ -15,7 +15,7 @@ namespace src.Entities
 
         public Product(string name, double price)
         {
-            Name = name; ;
+            Name = name;
             Price = price;
         }
     }

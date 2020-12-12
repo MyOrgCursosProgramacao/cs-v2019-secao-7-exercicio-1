@@ -23,7 +23,8 @@ namespace src
             {
                 Console.WriteLine(Environment.NewLine + "Menu de opções");
                 Console.WriteLine("1) Cadastro de pedido");
-                Console.WriteLine("2) Sair");
+                Console.WriteLine("2) Listar pedidos cadastrados");
+                Console.WriteLine("3) Sair");
                 Console.Write("Digite o número da opção desejada: ");
                 caseSwitch = int.Parse(Console.ReadLine());
                 switch (caseSwitch)
@@ -191,7 +192,7 @@ namespace src
                                     
                                     foreach (OrderItem obj in items)
                                     {
-                                        pedido.AddItem(new OrderItem(obj.Quantity, new Product(obj.Product.Name, obj.Product.Price)));
+                                        pedido.AddItem(obj);
                                     }
 
                                     Console.WriteLine();
@@ -226,8 +227,24 @@ namespace src
                         break;
 
                     case 2:
-                        Console.WriteLine(Environment.NewLine + "Sair");
+                        if(listaPedidos.Count < 1)
+                        {
+                            Console.WriteLine(Environment.NewLine + "Nenhum pedido cadastrato");
+                        }
+                        else
+                        {
+                            Console.WriteLine(Environment.NewLine + "Pedidos cadastrados:");
 
+                            foreach (Order obj in listaPedidos)
+                            {
+                                Console.WriteLine(Environment.NewLine + obj.ToString());
+                            }
+                        }
+
+                        break;
+
+                    case 3:
+                        Console.WriteLine(Environment.NewLine + "Sair");
                         loop = false;
                         break;
 

@@ -11,7 +11,7 @@ namespace src.Entities
         public OrderStatus Status { get; set; }
 
         public Client Client { get; set; }
-        public List<OrderItem> Items { get; private set; }
+        public List<OrderItem> Items { get; private set; } = new List<OrderItem>();
 
         public Order()
         {
@@ -54,16 +54,13 @@ namespace src.Entities
             sb.Append("Order status: ");
             sb.AppendLine(Status.ToString());
             sb.Append("Client: ");
-            sb.Append(Client.Name);
-            sb.Append(" (");
-            sb.Append(Client.BirthDate.ToString("dd/MM/yyyy"));
-            sb.Append(" - ");
-            sb.AppendLine(Client.Email);
+            sb.Append(Client.ToString());
             sb.AppendLine("Order items:");
             foreach(OrderItem obj in Items)
             {
                 sb.AppendLine(obj.ToString());
             }
+            sb.Append("Total: $ ");
             sb.AppendLine(Total().ToString("F2", CultureInfo.InvariantCulture));
 
             return sb.ToString();

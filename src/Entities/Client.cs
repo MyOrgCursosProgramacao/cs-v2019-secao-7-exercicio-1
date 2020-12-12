@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace src.Entities
 {
@@ -18,6 +19,19 @@ namespace src.Entities
             Name = name;
             Email = email;
             BirthDate = birthDate;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(Name);
+            sb.Append(" (");
+            sb.Append(BirthDate.ToString("dd/MM/yyyy"));
+            sb.Append(") - ");
+            sb.Append(Email);
+
+            return sb.ToString();
         }
     }
 }

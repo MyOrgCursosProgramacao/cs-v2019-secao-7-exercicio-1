@@ -7,11 +7,15 @@ namespace src
 {
     class Program
     {
-        private static object cultureInfo;
 
         static void Main(string[] args)
         {
             Console.WriteLine("Resolução do exercício proposto de combinações da seção 7");
+
+            List<Order> listaPedidos = new List<Order>();
+            Client cliente = new Client();
+            List<OrderItem> items = new List<OrderItem>();
+            string status = "PendingPayment";
 
             int caseSwitch;
             bool loop = true;
@@ -36,7 +40,7 @@ namespace src
                         {
                             if (String.IsNullOrEmpty(name) || name.Length < 5 || String.IsNullOrWhiteSpace(name))
                             {
-                                Console.WriteLine(Environment.NewLine
+                                Console.Write(Environment.NewLine
                                     + "O nome do cliente deve ter um formato válido e mais de 5 letras. "
                                     + Environment.NewLine
                                     + "Digite o nome do cliente: ");
@@ -55,7 +59,7 @@ namespace src
                         {
                             if (String.IsNullOrEmpty(email) || !email.Contains('@') || email.Contains(' ') || !email.Contains('.') || String.IsNullOrWhiteSpace(email))
                             {
-                                Console.WriteLine(Environment.NewLine
+                                Console.Write(Environment.NewLine
                                     + "O email do cliente deve ter um formato válido."
                                     + Environment.NewLine
                                     + "Digite o email do cliente: ");
@@ -67,14 +71,14 @@ namespace src
                             }
                         } while (loopClient);
 
-                        Console.WriteLine("Data de nascimento dd/mm/aaaa: ");
+                        Console.Write("Data de nascimento dd/mm/aaaa: ");
                         string birthDate = Console.ReadLine().Trim();
                         loopClient = true;
                         do
                         {
                             if (String.IsNullOrEmpty(birthDate) || birthDate.Length != 10 || !birthDate.Contains('/') || birthDate.Contains('.') || birthDate.Contains('-') || String.IsNullOrWhiteSpace(birthDate))
                             {
-                                Console.WriteLine(Environment.NewLine
+                                Console.Write(Environment.NewLine
                                     + "A data de nascimento deve ter um formato válido dd/mm/aaaa."
                                     + Environment.NewLine
                                     + "Digite a data de nascimento do cliente: ");
@@ -82,7 +86,7 @@ namespace src
                             }
                             else if (int.Parse(birthDate.Substring(6, 4)) > DateTime.Now.Year)
                             {
-                                Console.WriteLine(Environment.NewLine
+                                Console.Write(Environment.NewLine
                                     + $"O ano deve ser anterior a {DateTime.Now.Year}."
                                     + Environment.NewLine
                                     + "Digite a data de nascimento do cliente: ");
@@ -101,8 +105,11 @@ namespace src
                             + ") - "
                             + email);
 
+                        //Instancia do objeto cliente
+                        cliente = new Client(name, email, DateTime.Parse(birthDate));
+
                         Console.WriteLine(Environment.NewLine + "Dados do pedido");
-                        string status;
+
                         loopClient = true;
                         do
                         {
@@ -146,17 +153,15 @@ namespace src
                         } while (loopClient);
 
                         bool itemLoop = true;
-                        int itemCount = 0;
 
                         string itemName;
                         int itemQtd;
                         double itemPrice;
 
-                        List<OrderItem> items = new List<OrderItem>();
                         do
                         {
-                            Console.WriteLine(Environment.NewLine + $"Itens cadastrados: {itemCount}");
-                            double sum=0.0;
+                            Console.WriteLine(Environment.NewLine + $"Itens cadastrados: {items.Count}");
+                            double sum = 0.0;
                             foreach (OrderItem obj in items)
                             {
                                 Console.WriteLine(obj.ToString());
@@ -164,16 +169,14 @@ namespace src
                             }
                             Console.WriteLine($"Total do pedido: $ {sum.ToString("F2", CultureInfo.InvariantCulture)}");
 
-                            
                             Console.Write("Deseja cadastrar um novo item (s/n)? ");
                             string addItem = Console.ReadLine();
                             if (addItem[0] == 's' || addItem[0] == 'S' || addItem[0] == 'y' || addItem[0] == 'Y')
                             {
-                                itemCount++;
-                                Console.WriteLine(Environment.NewLine + $"Entre com os dados do item #{itemCount}");
+                                Console.WriteLine(Environment.NewLine + $"Entre com os dados do item #{items.Count + 1}");
                                 Console.Write("Nome do item: ");
                                 itemName = Console.ReadLine();
-                                Console.Write("Preço do item: $");
+                                Console.Write("Preço do item: $ ");
                                 itemPrice = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
                                 Console.Write("Quantidade: ");
                                 itemQtd = int.Parse(Console.ReadLine());
@@ -182,9 +185,31 @@ namespace src
                             }
                             else if (addItem[0] == 'n' || addItem[0] == 'N')
                             {
-                                if (itemCount > 0)
+                                if (items.Count > 0)
                                 {
+                                    Order pedido = new Order(DateTime.Now, Enum.Parse<OrderStatus>(status), cliente);
+                                    
+                                    foreach (OrderItem obj in items)
+                                    {
+                                        pedido.AddItem(new OrderItem(obj.Quantity, new Product(obj.Product.Name, obj.Product.Price)));
+                                    }
+
+                                    Console.WriteLine();
+
+                                    Console.WriteLine("Resumo do pedido: ");
+                                    Console.WriteLine("Momento do pedido: " + pedido.Moment.ToString("dd/MM/yyyy"));
+                                    Console.WriteLine("Situação do pedido: " + pedido.Status.ToString());
+                                    Console.WriteLine("Cliente: " + pedido.Client.ToString());
+                                    Console.WriteLine("Lista de itens: ");
+                                    foreach (OrderItem obj in pedido.Items)
+                                    {
+                                        Console.WriteLine(obj.ToString());
+                                    }
+                                    listaPedidos.Add(pedido);
+
                                     itemLoop = false;
+
+
                                 }
                                 else
                                 {
@@ -197,12 +222,12 @@ namespace src
                             }
 
                         } while (itemLoop);
-                        // Continuar daqui
-                        Console.WriteLine();
+
                         break;
 
                     case 2:
                         Console.WriteLine(Environment.NewLine + "Sair");
+
                         loop = false;
                         break;
 
